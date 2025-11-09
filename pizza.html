@@ -4,6 +4,19 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Calculateur de pâte à pizza</title>
+  <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1b4f5a">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker enregistré ✅'))
+        .catch(err => console.log('Erreur SW:', err));
+    });
+  }
+</script>
+
 <link rel="manifest" href="manifest.json">
 <meta name="theme-color" content="#1b4f5a">
 
@@ -252,3 +265,4 @@ calcWaterTemp();
 </script>
 </body>
 </html>
+
