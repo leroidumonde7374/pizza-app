@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Calculateur de pâte à pizza</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1b4f5a">
+
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker enregistré ✅'))
+        .catch(err => console.log('Erreur SW:', err));
+    });
+  }
+</script>
+
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f3f4f6;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  .container {
+    max-width: 1000px;
+    margin: auto;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    overflow: hidden;
+  }
+  header {
+    background: #007c91;
+    color: #fff;
+    padding: 20px;
+  }
+  header h1 { margin: 0; }
+  main { display: flex; flex-wrap: wrap; padding: 20px; gap: 20px; }
+  section { flex: 1 1 450px; }
+  label { display: block; font-weight: bold; margin-top: 10px; }
+  input, select, button {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+  button { background: #007c91; color: white; border: none; cursor: pointer; }
+  button:hover { opacity: 0.9; }
+  .box { border-left: 5px solid #007c91; background: #f8fafc; padding: 10px; border-radius: 8px; margin-top: 10px; }
+  .result { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .result div { background: #f1f5f9; border-radius: 8px; padding: 8px; text-align: center; }
+  .timer { text-align: center; font-family: monospace; font-size: 1.5em; color: #007c91; }
+  footer { background: #f1f5f9; text-align: right; padding: 10px; font-size: 0.9em; color: #666; }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+  <h1>Calculateur de pâte à pizza</h1>
+  <p>Modifie n'importe quel paramètre et les autres s'ajustent automatiquement.</p>
+</header>
+<main>
+  <section>
+    <label>Type de pizza</label>
+    <select id="preset"></select>
+
+    <label>Nombre de pâtons</label>
+    <input type="number" id="numBalls" value="4" min="1">
+
+    <label>Poids par pâton (g)</label>
+    <input type="number" id="weightPerBall" value="250" min="1">
+
+    <label>Poids total de pâte (g)</label>
+    <input type="number" id="totalWeight" value="1000" min="1">
+
+    <label>Hydratation (%)</label>
+    <input type="range" id="hydration" min="40" max="90" value="60">
+    <span id="hydrationVal">60%</span>
+
+    <label>Sel (% farine)</label>
+    <input type="range" id="saltPct" min="0" max="5" step="0.1" value="2">
+    <span id="saltVal">2%</span>
+
+    <label>Levure instantanée (% farine)</label>
+    <input type="range" id="yeastPct" min="0" max="1.5" step="0.01" value="0.2">
+    <span id="yeastVal">0.2%</span>
+
+    <div class="box">
+      <label>Modifier la farine directement (g)</label>
+      <input type="number" id="flourInput" value="0">
+      <button id="applyFlour">Appliquer</button>
+    </div>
+  </section>
+
+  <section>
+    <div class="box">
+      <h3>Ingrédients calculés</h3>
+      <div class="result">
+        <div><strong>Farine</strong><br><span id="flour">0</span> g</div>
+        <div><strong>Eau</strong><br><span id="water">0</span> g</div>
+        <div><strong>Sel</strong><br><span id="salt">0</span> g</div>
+        <div><strong>Levure inst.</strong><br><span id="yeast">0</span> g</div>
+        <div><strong>Levure fraîche</strong><br><span id="yeastFresh">0</span> g</div>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>Minuteur</h3>
+      <input type="number" id="timerMinutes" value="0"> minutes
+      <div class="timer" id="timerDisplay">00:00</div>
+      <div style="display:flex; gap:5px; margin-top:5px;">
+        <button id="startTimer">Start</button>
+        <button id="pauseTimer">Pause</button>
+        <button id="resetTimer">Reset</button>
+      </div>
+    </div>
+
+    <div class="box">
+      <h3>Calculateur de température d'eau</h3>
+      <label>Temp. finale souhaitée (°C)</label><input type="number" id="desiredDoughTemp" value="26">
+      <label>Temp. ambiante (°C)</label><input type="number" id="roomTemp" value="22">
+      <label>Temp. farine (°C)</label><input type="number" id="flourTemp" value="22">
+      <label>Facteur de friction (°C)</label><input type="number" id="frictionFactor" value="5">
+      <p><strong>Temp. eau ≈ <span id="waterTemp">0</span> °C</strong></p>
+    </div>
+  </section>
+</main>
+<footer>
+  Développé avec ♥ — turquoise foncé & gris.
+</footer>
+</div>
+<script>
+const PRESETS = {
+  "Napolitaine": { hydration: 0.60, saltPct: 0.02, yeastPct: 0.002 },
+  "Romaine": { hydration: 0.65, saltPct: 0.02, yeastPct: 0.002 },
+  "New York": { hydration: 0.62, saltPct: 0.02, yeastPct: 0.0015 },
+  "Detroit": { hydration: 0.70, saltPct: 0.02, yeastPct: 0.0025 },
+  "Biga": { hydration: 0.58, saltPct: 0.02, yeastPct: 0.0015 }
+};
+
+const presetSel = document.getElementById('preset');
+for (let k in PRESETS) {
+  const opt = document.createElement('option');
+  opt.value = k; opt.textContent = k; presetSel.appendChild(opt);
+}
+
+let numBalls = 4, weightPerBall = 250, totalWeight = 1000;
+let hydration = 0.60, saltPct = 0.02, yeastPct = 0.002;
+let flour=0, water=0, salt=0, yeast=0, yeastFresh=0;
+
+function recalcFromTotal() {
+  const combinePct = 1 + hydration + saltPct + yeastPct;
+  flour = totalWeight / combinePct;
+  water = flour * hydration;
+  salt = flour * saltPct;
+  yeast = flour * yeastPct;
+  yeastFresh = yeast * 3;
+  document.getElementById('flour').textContent = flour.toFixed(0);
+  document.getElementById('water').textContent = water.toFixed(0);
+  document.getElementById('salt').textContent = salt.toFixed(1);
+  document.getElementById('yeast').textContent = yeast.toFixed(2);
+  document.getElementById('yeastFresh').textContent = yeastFresh.toFixed(2);
+  document.getElementById('flourInput').value = flour.toFixed(0);
+}
+
+function updateAll() {
+  numBalls = +document.getElementById('numBalls').value;
+  weightPerBall = +document.getElementById('weightPerBall').value;
+  totalWeight = +document.getElementById('totalWeight').value;
+  recalcFromTotal();
+}
+
+presetSel.addEventListener('change', e=>{
+  const pr = PRESETS[e.target.value];
+  hydration = pr.hydration; saltPct = pr.saltPct; yeastPct = pr.yeastPct;
+  document.getElementById('hydration').value = hydration*100;
+  document.getElementById('saltPct').value = saltPct*100;
+  document.getElementById('yeastPct').value = yeastPct*100;
+  document.getElementById('hydrationVal').textContent = Math.round(hydration*100)+"%";
+  document.getElementById('saltVal').textContent = (saltPct*100).toFixed(1)+"%";
+  document.getElementById('yeastVal').textContent = (yeastPct*100).toFixed(2)+"%";
+  recalcFromTotal();
+});
+
+document.getElementById('numBalls').oninput = ()=>{
+  numBalls = +numBalls.value;
+  totalWeight = +document.getElementById('numBalls').value * +document.getElementById('weightPerBall').value;
+  document.getElementById('totalWeight').value = totalWeight;
+  recalcFromTotal();
+};
+
+document.getElementById('weightPerBall').oninput = ()=>{
+  totalWeight = +document.getElementById('numBalls').value * +document.getElementById('weightPerBall').value;
+  document.getElementById('totalWeight').value = totalWeight;
+  recalcFromTotal();
+};
+
+document.getElementById('totalWeight').oninput = ()=>{
+  totalWeight = +document.getElementById('totalWeight').value;
+  recalcFromTotal();
+};
+
+document.getElementById('hydration').oninput = e=>{
+  hydration = e.target.value/100; document.getElementById('hydrationVal').textContent = e.target.value+'%'; recalcFromTotal();
+};
+document.getElementById('saltPct').oninput = e=>{
+  saltPct = e.target.value/100; document.getElementById('saltVal').textContent = e.target.value+'%'; recalcFromTotal();
+};
+document.getElementById('yeastPct').oninput = e=>{
+  yeastPct = e.target.value/100; document.getElementById('yeastVal').textContent = e.target.value+'%'; recalcFromTotal();
+};
+
+document.getElementById('applyFlour').onclick = ()=>{
+  flour = +document.getElementById('flourInput').value;
+  water = flour * hydration; salt = flour * saltPct; yeast = flour * yeastPct; yeastFresh = yeast * 3;
+  totalWeight = flour + water + salt + yeast;
+  document.getElementById('totalWeight').value = totalWeight.toFixed(0);
+  document.getElementById('water').textContent = water.toFixed(0);
+  document.getElementById('salt').textContent = salt.toFixed(1);
+  document.getElementById('yeast').textContent = yeast.toFixed(2);
+  document.getElementById('yeastFresh').textContent = yeastFresh.toFixed(2);
+};
+
+// Timer
+let timer=null, secs=0;
+function updateTimerDisplay(){
+  const m=Math.floor(secs/60),s=secs%60;document.getElementById('timerDisplay').textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+document.getElementById('startTimer').onclick=()=>{if(timer)clearInterval(timer);secs=document.getElementById('timerMinutes').value*60;updateTimerDisplay();timer=setInterval(()=>{if(secs<=0){clearInterval(timer);return;}secs--;updateTimerDisplay();},1000);};
+document.getElementById('pauseTimer').onclick=()=>{if(timer){clearInterval(timer);timer=null;}};
+document.getElementById('resetTimer').onclick=()=>{if(timer){clearInterval(timer);}secs=0;updateTimerDisplay();};
+
+// Water temperature calculator
+function calcWaterTemp(){
+  const desired=+document.getElementById('desiredDoughTemp').value;
+  const room=+document.getElementById('roomTemp').value;
+  const flourT=+document.getElementById('flourTemp').value;
+  const friction=+document.getElementById('frictionFactor').value;
+  const waterT=desired*3-(room+flourT+friction);
+  document.getElementById('waterTemp').textContent=waterT.toFixed(1);
+}
+['desiredDoughTemp','roomTemp','flourTemp','frictionFactor'].forEach(id=>document.getElementById(id).oninput=calcWaterTemp);
+
+recalcFromTotal();
+calcWaterTemp();
+</script>
+</body>
+</html>
