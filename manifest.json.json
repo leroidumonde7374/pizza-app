@@ -1,10 +1,11 @@
 {
-  "name": "Pizza Dough Calculator",
-  "short_name": "PizzaDough",
+  "name": "Pâte à Pizza",
+  "short_name": "Pâte à Pizza",
   "start_url": "pizza.html",
   "display": "standalone",
-  "background_color": "#007c91",
-  "theme_color": "#007c91",
+  "background_color": "#1b4f5a",
+  "theme_color": "#1b4f5a",
+  "description": "Calculateur intelligent de pâte à pizza : napolitaine, romaine, New York, Detroit et biga.",
   "icons": [
     {
       "src": "icon-192.png",
