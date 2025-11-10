@@ -9,11 +9,11 @@
 <link rel="icon" href="favicon.ico" />
 <style>
   :root{
-    --turquoise:#01a6bf; /* couleur principale (turquoise clair) */
+    --turquoise:#01a6bf; /* couleur principale */
     --dark:#1b4f5a;      /* turquoise foncé */
     --gray:#6b7280;
-    --bg-gradient-start:#017f90; /* un peu plus profond pour contraste */
-    --bg-gradient-end:#ffffff;
+    --bg-start:#017f90;  /* dégradé plus contrasté en haut */
+    --bg-end:#ffffff;    /* bas */
     --card:#ffffff;
   }
   *{box-sizing:border-box}
@@ -22,21 +22,21 @@
     margin:0;
     font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,'Helvetica Neue',Arial;
     color:#222;
-    background:linear-gradient(180deg,var(--bg-gradient-start),var(--bg-gradient-end));
+    background:linear-gradient(180deg,var(--bg-start),var(--bg-end));
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* App container */
+  /* Container */
   .app{max-width:1100px;margin:28px auto;background:var(--card);border-radius:12px;overflow:hidden;box-shadow:0 12px 40px rgba(11,22,28,0.08)}
   header{background:var(--dark);color:#fff;padding:18px 22px}
   header h1{margin:0;font-size:1.25rem;letter-spacing:0.2px}
   main{display:flex;flex-wrap:wrap;padding:18px;gap:18px;align-items:flex-start}
   section{flex:1 1 420px;min-width:260px}
   label{display:block;font-weight:600;margin-top:10px;color:var(--gray);font-size:0.95rem}
-  input,select,button{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #e6eef2;font-size:16px}
-  /* fix iOS zoom: font-size >= 16 on inputs (done above) */
-
+  /* Inputs: font-size 16px or more prevents iOS zoom */
+  input,select,button,textarea{width:100%;padding:10px;margin-top:6px;border-radius:8px;border:1px solid #e6eef2;font-size:16px;background:#fff}
   input[type=range]{height:28px}
   button{background:var(--turquoise);color:#fff;border:none;cursor:pointer;padding:10px;border-radius:8px;box-shadow:0 6px 18px rgba(1,166,191,0.16)}
   .card{background:#f8fbff;border-left:6px solid var(--turquoise);padding:12px;border-radius:8px}
@@ -45,9 +45,9 @@
   .timer{font-family:monospace;font-size:1.5rem;color:var(--turquoise);text-align:center;margin-top:10px}
   footer{text-align:right;color:#666;padding:10px;font-size:0.9rem}
 
-  /* Welcome overlay (splash-like) */
+  /* Welcome overlay (splash) */
   .overlay{position:fixed;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.18),rgba(0,0,0,0.25));display:flex;align-items:center;justify-content:center;z-index:9999}
-  .welcome{background:linear-gradient(180deg,var(--bg-gradient-start),var(--bg-gradient-end));padding:22px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,0.18);width:86%;max-width:560px}
+  .welcome{background:linear-gradient(180deg,var(--bg-start),var(--bg-end));padding:22px;border-radius:14px;display:flex;flex-direction:column;align-items:center;gap:12px;box-shadow:0 20px 60px rgba(0,0,0,0.18);width:86%;max-width:560px}
   .logo-badge{width:120px;height:120px;border-radius:22px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;box-shadow:0 12px 30px rgba(0,0,0,0.18)}
   .logo-badge img{width:86px;height:86px;border-radius:14px}
   .welcome h2{margin:0;color:var(--dark);font-size:1.05rem;text-align:center;opacity:0;transform:translateY(8px);animation:fadeUp .7s ease .25s both}
@@ -71,7 +71,7 @@
 </head>
 <body>
 
-<!-- welcome overlay (animated) -->
+<!-- Welcome overlay -->
 <div class="overlay" id="overlay" aria-hidden="true">
   <div class="welcome" role="dialog" aria-label="Bienvenue">
     <div class="logo-badge logo"><img src="icon-512.png" alt="Mon Pizzagramme"></div>
@@ -79,38 +79,38 @@
   </div>
 </div>
 
-<!-- main app -->
+<!-- App -->
 <div class="app" id="app" aria-live="polite">
   <header>
     <h1>Mon Pizzagramme</h1>
   </header>
 
   <main>
-    <!-- controls -->
+    <!-- Controls -->
     <section class="fade-section" id="controls">
       <label for="preset">Type de pizza</label>
       <select id="preset" aria-label="Type de pizza"></select>
 
       <label for="numBalls">Nombre de pâtons</label>
-      <input id="numBalls" type="number" value="4" min="1" inputmode="numeric">
+      <input id="numBalls" type="number" value="4" min="1" inputmode="numeric" />
 
       <label for="weightPerBall">Poids par pâton (g)</label>
-      <input id="weightPerBall" type="number" value="250" min="1" inputmode="numeric">
+      <input id="weightPerBall" type="number" value="250" min="1" inputmode="numeric" />
 
       <label for="totalWeight">Poids total de pâte (g)</label>
-      <input id="totalWeight" type="number" value="1000" min="1" inputmode="numeric">
+      <input id="totalWeight" type="number" value="1000" min="1" inputmode="numeric" />
 
       <label>Hydratation (%) <span id="hydrationVal">60%</span></label>
-      <input id="hydration" type="range" min="40" max="90" value="60">
+      <input id="hydration" type="range" min="40" max="90" value="60" />
 
       <label>Sel (% farine) <span id="saltVal">2%</span></label>
-      <input id="saltPct" type="range" min="0" max="5" step="0.1" value="2">
+      <input id="saltPct" type="range" min="0" max="5" step="0.1" value="2" />
 
       <label>Levure instant. (% farine) <span id="yeastVal">0.20%</span></label>
-      <input id="yeastPct" type="range" min="0" max="1.5" step="0.01" value="0.20">
+      <input id="yeastPct" type="range" min="0" max="1.5" step="0.01" value="0.20" />
     </section>
 
-    <!-- outputs -->
+    <!-- Outputs -->
     <section class="fade-section" id="outputs">
       <div class="card" id="ingredientsCard">
         <h3>Ingrédients calculés</h3>
@@ -155,10 +155,10 @@
 /* PRESETS */
 const PRESETS = {
   "Napolitaine": { hydration: 0.60, saltPct: 0.02, yeastPct: 0.002 },
-  "Romaine": { hydration: 0.65, saltPct: 0.02, yeastPct: 0.002 },
-  "New York": { hydration: 0.62, saltPct: 0.02, yeastPct: 0.0015 },
-  "Detroit": { hydration: 0.70, saltPct: 0.02, yeastPct: 0.0025 },
-  "Biga": { hydration: 0.58, saltPct: 0.02, yeastPct: 0.0015 }
+  "Romaine":    { hydration: 0.65, saltPct: 0.02, yeastPct: 0.002 },
+  "New York":   { hydration: 0.62, saltPct: 0.02, yeastPct: 0.0015 },
+  "Detroit":    { hydration: 0.70, saltPct: 0.02, yeastPct: 0.0025 },
+  "Biga":       { hydration: 0.58, saltPct: 0.02, yeastPct: 0.0015 }
 };
 
 /* ELEMENTS */
@@ -168,21 +168,23 @@ Object.keys(PRESETS).forEach(k=>{
 });
 presetSel.value='Napolitaine';
 
-const numBallsEl=document.getElementById('numBalls');
-const weightPerBallEl=document.getElementById('weightPerBall');
-const totalWeightEl=document.getElementById('totalWeight');
-const hydrationEl=document.getElementById('hydration');
-const saltPctEl=document.getElementById('saltPct');
-const yeastPctEl=document.getElementById('yeastPct');
-const flourEl=document.getElementById('flour');
-const waterEl=document.getElementById('water');
-const saltEl=document.getElementById('salt');
-const yeastEl=document.getElementById('yeast');
-const yeastFreshEl=document.getElementById('yeastFresh');
-const totalDescEl=document.getElementById('totalDesc');
-const hydrationVal=document.getElementById('hydrationVal');
-const saltVal=document.getElementById('saltVal');
-const yeastVal=document.getElementById('yeastVal');
+const numBallsEl = document.getElementById('numBalls');
+const weightPerBallEl = document.getElementById('weightPerBall');
+const totalWeightEl = document.getElementById('totalWeight');
+const hydrationEl = document.getElementById('hydration');
+const saltPctEl = document.getElementById('saltPct');
+const yeastPctEl = document.getElementById('yeastPct');
+
+const flourEl = document.getElementById('flour');
+const waterEl = document.getElementById('water');
+const saltEl = document.getElementById('salt');
+const yeastEl = document.getElementById('yeast');
+const yeastFreshEl = document.getElementById('yeastFresh');
+const totalDescEl = document.getElementById('totalDesc');
+
+const hydrationVal = document.getElementById('hydrationVal');
+const saltVal = document.getElementById('saltVal');
+const yeastVal = document.getElementById('yeastVal');
 
 /* STATE */
 let numBalls = Number(numBallsEl.value);
@@ -192,38 +194,40 @@ let hydration = PRESETS['Napolitaine'].hydration;
 let saltPct = PRESETS['Napolitaine'].saltPct;
 let yeastPct = PRESETS['Napolitaine'].yeastPct;
 
-/* RECALC */
+/* RECALC FUNCTION */
 function recalcFromTotal(){
-  const combinePct = 1 + hydration + saltPct + yeastPct;
-  const F = totalWeight / combinePct;
-  const W = F * hydration;
-  const S = F * saltPct;
-  const Y = F * yeastPct;
-  flourEl.textContent = Math.round(F);
-  waterEl.textContent = Math.round(W);
-  saltEl.textContent = S.toFixed(1);
-  yeastEl.textContent = Y.toFixed(2);
-  yeastFreshEl.textContent = (Y*3).toFixed(2);
+  // combine percentages to deduce flour base from total weight
+  const combinePct = 1 + hydration + saltPct + yeastPct; // flour + water + salt + yeast
+  const F = totalWeight / combinePct; // farine
+  const W = F * hydration;            // eau
+  const S = F * saltPct;             // sel
+  const Y = F * yeastPct;            // levure instant
+  // update UI
+  flourEl.textContent = Math.round(F) + ' g';
+  waterEl.textContent = Math.round(W) + ' g';
+  saltEl.textContent = S.toFixed(1) + ' g';
+  yeastEl.textContent = Y.toFixed(2) + ' g';
+  yeastFreshEl.textContent = (Y * 3).toFixed(2) + ' g (approx.)';
   totalDescEl.textContent = totalWeight + ' g — ' + numBalls + ' pâtons × ' + weightPerBall + ' g';
-  // small pop animation on results
+  // little pop animation
   document.querySelectorAll('#resultGrid > div').forEach(n=>{ n.style.transform='scale(1.02)'; setTimeout(()=>n.style.transform='scale(1)',120); });
 }
 
-/* EVENTS */
+/* EVENTS & BINDINGS */
 numBallsEl.oninput = ()=>{
-  numBalls = Number(numBallsEl.value);
+  numBalls = Number(numBallsEl.value) || 0;
   totalWeight = Math.round(numBalls * weightPerBall);
   totalWeightEl.value = totalWeight;
   recalcFromTotal();
 };
 weightPerBallEl.oninput = ()=>{
-  weightPerBall = Number(weightPerBallEl.value);
+  weightPerBall = Number(weightPerBallEl.value) || 0;
   totalWeight = Math.round(numBalls * weightPerBall);
   totalWeightEl.value = totalWeight;
   recalcFromTotal();
 };
 totalWeightEl.oninput = ()=>{
-  totalWeight = Number(totalWeightEl.value);
+  totalWeight = Number(totalWeightEl.value) || 0;
   recalcFromTotal();
 };
 hydrationEl.oninput = (e)=>{
@@ -250,44 +254,66 @@ presetSel.onchange = (e)=>{
   hydrationVal.textContent = Math.round(hydration*100) + '%';
   saltVal.textContent = (saltPct*100).toFixed(1) + '%';
   yeastVal.textContent = (yeastPct*100).toFixed(2) + '%';
-  // small transition effect
+  // small transition to make it smoother
   document.getElementById('controls').classList.add('hidden');
   setTimeout(()=>{ recalcFromTotal(); document.getElementById('controls').classList.remove('hidden'); }, 180);
 };
 
 /* TIMER */
-let timer=null; let secs=0;
+let timer = null;
+let secs = 0;
 const timerDisplay = document.getElementById('timerDisplay');
-const timerMinutes = document.getElementById('timerMinutes');
-document.getElementById('startTimer').onclick = ()=>{ if(timer)clearInterval(timer); secs = Number(timerMinutes.value)*60; updateTimer(); timer = setInterval(()=>{ if(secs<=0){ clearInterval(timer); return;} secs--; updateTimer(); },1000); };
+document.getElementById('startTimer').onclick = ()=>{
+  if(timer) clearInterval(timer);
+  secs = Number(document.getElementById('timerMinutes').value) * 60;
+  updateTimer();
+  timer = setInterval(()=>{ if(secs<=0){ clearInterval(timer); timer=null; return; } secs--; updateTimer(); }, 1000);
+};
 document.getElementById('pauseTimer').onclick = ()=>{ if(timer){ clearInterval(timer); timer=null; } };
 document.getElementById('resetTimer').onclick = ()=>{ if(timer){ clearInterval(timer);} secs=0; updateTimer(); };
 function updateTimer(){ const m=Math.floor(secs/60), s=secs%60; timerDisplay.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
 
 /* WATER TEMP CALC */
 function calcWaterTemp(){
-  const desired = Number(document.getElementById('desiredDoughTemp').value);
-  const room = Number(document.getElementById('roomTemp').value);
-  const flourT = Number(document.getElementById('flourTemp').value);
-  const friction = Number(document.getElementById('frictionFactor').value);
+  const desired = Number(document.getElementById('desiredDoughTemp').value) || 0;
+  const room = Number(document.getElementById('roomTemp').value) || 0;
+  const flourT = Number(document.getElementById('flourTemp').value) || 0;
+  const friction = Number(document.getElementById('frictionFactor').value) || 0;
+  // simple baker's formula (approx): waterT = desired*3 - (room + flour + friction)
   const waterT = desired*3 - (room + flourT + friction);
   document.getElementById('waterTemp').textContent = waterT.toFixed(1);
 }
-['desiredDoughTemp','roomTemp','flourTemp','frictionFactor'].forEach(id=>document.getElementById(id).oninput = calcWaterTemp);
+['desiredDoughTemp','roomTemp','flourTemp','frictionFactor'].forEach(id=>{
+  const el = document.getElementById(id);
+  if(el) el.oninput = calcWaterTemp;
+});
 
-/* INIT & welcome overlay hide */
+/* INIT */
 document.addEventListener('DOMContentLoaded', ()=>{
+  // initial values
+  hydrationEl.value = Math.round(hydration*100);
+  saltPctEl.value = saltPct*100;
+  yeastPctEl.value = yeastPct*100;
+  hydrationVal.textContent = Math.round(hydration*100) + '%';
+  saltVal.textContent = (saltPct*100).toFixed(1) + '%';
+  yeastVal.textContent = (yeastPct*100).toFixed(2) + '%';
   recalcFromTotal();
   calcWaterTemp();
+  // hide welcome overlay with animation
   setTimeout(()=>{ const ov = document.getElementById('overlay'); ov.classList.add('fadeout'); setTimeout(()=>ov.style.display='none',700); }, 1100);
 });
 
-/* Register service worker (if present) */
+/* SERVICE WORKER REGISTRATION (if sw.js present) */
 if('serviceWorker' in navigator){
   window.addEventListener('load', ()=>{
-    navigator.serviceWorker.register('sw.js').then(()=>console.log('SW registered')).catch(()=>console.log('SW failed'));
+    navigator.serviceWorker.register('sw.js')
+      .then(()=>console.log('Service Worker enregistré'))
+      .catch(err=>console.log('Erreur SW:',err));
   });
 }
 </script>
+</body>
+</html>
+
 </body>
 </html>
