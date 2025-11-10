@@ -1,2 +1,0 @@
-# Mon Pizzagramme
-Aperçu pack.
