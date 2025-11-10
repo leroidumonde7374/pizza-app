@@ -1,0 +1,6 @@
+{
+  "name": "Mon Pizzagramme",
+  "short_name": "Pizzagramme",
+  "start_url": "index.html",
+  "display": "standalone"
+}
