@@ -1,1 +1,0 @@
-MonPizzagramme — pack complet. Déployez le contenu à la racine de votre site (Hostinger public_html ou GitHub Pages root).
