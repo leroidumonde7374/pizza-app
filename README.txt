@@ -1,0 +1,1 @@
+MonPizzagramme — pack final PWA. Déposez le contenu à la racine de votre site (GitHub Pages or Hostinger).
