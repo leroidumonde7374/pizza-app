@@ -4,66 +4,38 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
 <title>Mon Pizzagramme — Calculateur de pâte à pizza</title>
-
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#01c9d9">
+<meta name="theme-color" content="#018b90">
 <link rel="icon" href="favicon.png">
-
 <style>
 :root{
-  --turq: #01c9d9;
-  --turq-deep: #0f5f6a;
-  --bg-dark: #0f1415;
-  --card-bg: #f4f5f6;
-  --muted: #9aa0a6;
-  --radius: 12px;
-  --accent: #018b90;
+  --turq:#01c9d9;
+  --turq-deep:#0f5f6a;
+  --bg-dark:#111214;
+  --card-bg:#f1f3f4;
+  --muted:#9aa0a6;
+  --glass: rgba(255,255,255,0.06);
+  --radius:12px;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{
-  margin:0;
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  background: linear-gradient(180deg,var(--bg-dark), #061011);
-  color: #eef2f3;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-}
-
-/* Header */
-.header{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  padding:14px 18px;
-  background: linear-gradient(180deg,var(--turq),var(--turq-deep));
-  box-shadow: 0 8px 30px rgba(1,127,134,0.12);
-  position:sticky;
-  top:0;
-  z-index:40;
-}
-.logo-badge{
-  width:52px;height:52px;border-radius:12px;
-  background:linear-gradient(180deg,#2de0df,#01aab0);
-  display:flex;align-items:center;justify-content:center;
-  font-size:26px;color:white;
-  box-shadow:0 8px 24px rgba(1,127,134,0.25);
-  border:1px solid rgba(255,255,255,0.06);
-}
+body{margin:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial;background:linear-gradient(180deg,var(--bg-dark),#0f1b1c);color:#eef2f3;-webkit-font-smoothing:antialiased}
+.header{display:flex;align-items:center;gap:12px;padding:14px 18px;background:linear-gradient(180deg,var(--turq),var(--turq-deep));box-shadow:0 8px 30px rgba(1,127,134,0.12);position:sticky;top:0;z-index:40}
+.logo-badge{width:52px;height:52px;border-radius:12px;background:linear-gradient(180deg,#2de0df,#01aab0);display:flex;align-items:center;justify-content:center;font-size:26px;color:white;box-shadow:0 8px 24px rgba(1,127,134,0.25);border:1px solid rgba(255,255,255,0.06)}
 .header-title{font-weight:700;color:#fff;font-size:18px}
-
-/* Layout */
 .container{max-width:1100px;margin:20px auto;padding:18px}
-.card{background:var(--card-bg);color:#0b1220;border-radius:12px;padding:16px;box-shadow:0 12px 40px rgba(2,6,8,0.06);margin-top:18px}
+.card{background:var(--card-bg);color:#0b1220;border-radius:12px;padding:16px;box-shadow:0 12px 40px rgba(2,6,8,0.06)}
 .controls{display:grid;grid-template-columns:1fr 1fr;gap:14px}
 @media(max-width:900px){.controls{grid-template-columns:1fr}}
 label{display:block;color:var(--muted);margin-top:10px;font-weight:600}
 input[type=number], select, button, input[type=range]{width:100%;padding:10px;border-radius:8px;border:1px solid #e6eef2;font-size:15px;background:#fff;color:#111}
+.row{display:flex;gap:10px}
+.small{font-size:0.9rem;color:var(--muted)}
 .result-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:12px}
 .result-grid div{background:#fff;padding:12px;border-radius:8px;text-align:center;border:1px solid rgba(3,7,8,0.04)}
 .footer{padding:12px;text-align:center;color:var(--muted);font-size:0.9rem;margin-top:12px}
 
-/* textured calculator area */
+/* textured background for calculator area */
 .texture {
   background-image: radial-gradient(circle at 10px 10px, rgba(0,0,0,0.02) 0px, rgba(0,0,0,0.00) 2px);
   background-size: 12px 12px;
@@ -75,8 +47,7 @@ input[type=number], select, button, input[type=range]{width:100%;padding:10px;bo
 .splash-title{color:#fff;font-weight:800;font-size:26px}
 .splash-sub{color:rgba(255,255,255,0.92)}
 
-/* decorative bubbles */
-.bubbles-wrap{position:fixed;inset:0;pointer-events:none;z-index:10;overflow:hidden}
+/* bubbles animated but we will stop after 3s */
 .bubble{position:absolute;border-radius:50%;background:radial-gradient(circle at 30% 30%,rgba(255,255,255,0.12),rgba(255,255,255,0.02));opacity:0.22;filter:blur(6px);animation:float 6s linear infinite}
 .b1{width:18vmin;height:18vmin;left:6%;top:6%}
 .b2{width:14vmin;height:14vmin;right:8%;top:20%}
@@ -84,20 +55,22 @@ input[type=number], select, button, input[type=range]{width:100%;padding:10px;bo
 .b4{width:16vmin;height:16vmin;right:28%;bottom:18%}
 @keyframes float{0%{transform:translateY(0)}50%{transform:translateY(-20px)}100%{transform:translateY(0)}}
 
-/* small UI */
+/* button bounce */
 .btn {cursor:pointer;border-radius:8px;padding:10px;border:none}
 .btn-secondary{background:#fff;color:var(--turq)}
 .btn-primary{background:var(--turq-deep);color:#fff}
+
+/* timer display */
 .timer{display:flex;gap:8px;align-items:center;margin-top:10px}
+
+/* tiny toast */
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:28px;background:var(--turq);color:#fff;padding:10px 14px;border-radius:12px;display:none;box-shadow:0 8px 24px rgba(1,201,217,0.18);z-index:10000}
 
-/* little signature */
+/* signature */
 .by-steff{position:fixed;right:12px;bottom:8px;font-size:12px;color:rgba(255,255,255,0.85);z-index:60}
 </style>
 </head>
 <body>
-
-<!-- Splash (1.5s) -->
 <div class="splash" id="splash" aria-hidden="false">
   <div class="splash-bubble" id="splashBubble">🍕</div>
   <div class="splash-title">Mon Pizzagramme</div>
@@ -106,14 +79,13 @@ input[type=number], select, button, input[type=range]{width:100%;padding:10px;bo
 </div>
 
 <!-- decorative bubbles -->
-<div class="bubbles-wrap" id="bubbles" aria-hidden="true">
+<div style="position:fixed;inset:0;pointer-events:none;z-index:0">
   <div class="bubble b1"></div>
   <div class="bubble b2"></div>
   <div class="bubble b3"></div>
   <div class="bubble b4"></div>
 </div>
 
-<!-- Header -->
 <header class="header">
   <div style="display:flex;align-items:center;gap:12px">
     <div class="logo-badge" id="headerBadge">🍕</div>
@@ -121,9 +93,8 @@ input[type=number], select, button, input[type=range]{width:100%;padding:10px;bo
   </div>
 </header>
 
-<!-- Main -->
 <div class="container">
-  <div class="card texture" id="calculatorCard">
+  <div class="card texture">
     <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
       <div style="font-weight:700">Calculateur de pâte à pizza</div>
       <div style="color:var(--muted)">Version 2025 · par Steff</div>
@@ -194,12 +165,12 @@ input[type=number], select, button, input[type=range]{width:100%;padding:10px;bo
 
 <div class="by-steff">by Steff</div>
 
-<!-- sounds (standard placeholders; remplacez par vos sons) -->
+<!-- placeholders for icons and sounds -->
 <audio id="pop" src="pop.mp3" preload="auto"></audio>
 <audio id="ding" src="ding.mp3" preload="auto"></audio>
 
 <script>
-/* --- Presets --- */
+/* Presets */
 const PRESETS = {
   "Napolitaine":{hydration:0.60,saltPct:0.02,yeastPct:0.002},
   "Romaine":{hydration:0.65,saltPct:0.02,yeastPct:0.002},
@@ -208,7 +179,7 @@ const PRESETS = {
   "Biga":{hydration:0.58,saltPct:0.02,yeastPct:0.0015}
 };
 
-/* --- UI refs --- */
+/* UI refs */
 const presetSel = document.getElementById('preset');
 Object.keys(PRESETS).forEach(k=>{ const o=document.createElement('option'); o.value=k; o.textContent=k; presetSel.appendChild(o); });
 presetSel.value = 'Napolitaine';
@@ -224,19 +195,25 @@ const flourEl = document.getElementById('flour'), waterEl = document.getElementB
 
 let timerInterval = null;
 
-/* --- Recalc function (syncs fields bidirectionally) --- */
+/* Recalculate function:
+   - total weight = numBalls * weightPerBall (if user changes those)
+   - flour, water, salt, yeast computed from total and hydration
+   - when user edits totalWeight directly, adjust weightPerBall = total / numBalls
+*/
 function recalc(from){
   const nb = Math.max(1, Number(numBallsEl.value) || 1);
   let wp = Math.max(1, Number(weightPerBallEl.value) || 250);
   let total = Math.max(1, Number(totalWeightEl.value) || Math.round(nb*wp));
-
+  // if changed weightPerBall or numBalls, compute total
   if(from === 'wp' || from === 'nb'){
     total = Math.round(nb * wp);
     totalWeightEl.value = total;
   } else if(from === 'total'){
+    // change weight per ball
     wp = Math.round(total / nb);
     weightPerBallEl.value = wp;
   } else {
+    // default: sync total from nb * wp
     total = Math.round(nb * wp);
     totalWeightEl.value = total;
   }
@@ -246,6 +223,8 @@ function recalc(from){
   const saltPct = Number(saltPctEl.value)/100 || p.saltPct;
   const yeastPct = p.yeastPct;
 
+  // Compute flour assumed formula: total = F + W + S + Y  => total = F + F*hyd + F*saltPct + F*yeastPct
+  // So F = total / (1 + hyd + saltPct + yeastPct)
   const combine = 1 + hyd + saltPct + yeastPct;
   const F = total / combine;
   const W = F * hyd;
@@ -262,7 +241,7 @@ function recalc(from){
   hydrationVal.textContent = Math.round(hyd * 100) + '%';
 }
 
-/* --- Event wiring --- */
+/* events to keep values synced */
 numBallsEl.addEventListener('input', ()=>recalc('nb'));
 weightPerBallEl.addEventListener('input', ()=>recalc('wp'));
 totalWeightEl.addEventListener('input', ()=>recalc('total'));
@@ -276,6 +255,7 @@ presetSel.addEventListener('change', ()=>{
   recalc();
 });
 
+/* apply and reset */
 document.getElementById('applyPreset').addEventListener('click', ()=>presetSel.dispatchEvent(new Event('change')));
 document.getElementById('resetBtn').addEventListener('click', ()=>{
   numBallsEl.value = 4; weightPerBallEl.value = 250; hydrationEl.value = 60; saltPctEl.value = 2;
@@ -283,17 +263,20 @@ document.getElementById('resetBtn').addEventListener('click', ()=>{
   recalc();
 });
 
-/* --- Water temp calculator --- */
+/* water temp calculator
+   Basic formula: desired dough temp (DDT) = (FlourTemp + WaterTemp + RoomTemp + Friction)/3
+   Solve for WaterTemp = DDT*3 - FlourTemp - RoomTemp - Friction
+*/
 document.getElementById('calcWaterTemp').addEventListener('click', ()=>{
   const DDT = Number(document.getElementById('desiredDoughTemp').value) || 24;
   const flourT = Number(document.getElementById('flourTemp').value) || 20;
   const roomT = Number(document.getElementById('roomTemp').value) || 22;
-  const friction = 2;
+  const friction = 2; // small default
   const waterT = Math.round(DDT * 3 - flourT - roomT - friction);
   document.getElementById('waterTemp').textContent = waterT + ' °C';
 });
 
-/* --- Timer --- */
+/* Timer */
 function pad(n){ return n<10 ? '0'+n : n; }
 document.getElementById('startTimer').addEventListener('click', ()=>{
   const min = Math.max(0, Number(document.getElementById('timerMin').value) || 0);
@@ -311,31 +294,31 @@ document.getElementById('stopTimer').addEventListener('click', ()=>{
   if(timerInterval) { clearInterval(timerInterval); timerInterval=null; }
 });
 
-/* --- Splash & bubbles sequence --- */
+/* splash sequence: animation 1.5s, show, then remove; bubbles stop after 3s */
 document.addEventListener('DOMContentLoaded', ()=>{
+  // initial recalc
   recalc();
   const splash = document.getElementById('splash');
   const splashBubble = document.getElementById('splashBubble');
   const pop = document.getElementById('pop');
   const ding = document.getElementById('ding');
-  // animate splash bubble
+  // animate bubble
   splashBubble.style.transition = 'transform 1.5s cubic-bezier(.2,.9,.3,1), opacity .6s';
   splashBubble.style.transform = 'scale(1)';
   splashBubble.style.opacity = '1';
-  // play pop
+  document.getElementById('headerBadge').classList.add('animated');
+  // play sounds where possible
   setTimeout(()=>{ try{ pop.play().catch(()=>{}); }catch(e){} }, 200);
   setTimeout(()=>{ try{ ding.play().catch(()=>{}); }catch(e){} }, 800);
   // hide splash after 1.5s
   setTimeout(()=>{ splash.style.transition='opacity .6s'; splash.style.opacity=0;
     setTimeout(()=>{ splash.style.display='none'; recalc(); },620);
   },1500);
-  // stop bubble animations after 3s
+  // stop bubbles after 3s (they remain but animation paused)
   setTimeout(()=>{ document.querySelectorAll('.bubble').forEach(b=>b.style.animation='none'); },3000);
 
-  // service worker registration (if file present)
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('service-worker.js').catch(()=>{ /* ignore */ });
-  }
+  // register service worker
+  if('serviceWorker' in navigator){ navigator.serviceWorker.register('service-worker.js').catch(()=>{}); }
 });
 </script>
 </body>
