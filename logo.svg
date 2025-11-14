@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 200" role="img" aria-label="Mon Pizzagramme">
+  <defs>
+    <linearGradient id="g" x1="0" x2="1"><stop offset="0" stop-color="#6fe3e8"/><stop offset="1" stop-color="#0fa6ad"/></linearGradient>
+  </defs>
+  <rect width="100%" height="100%" fill="transparent"/>
+  <g transform="translate(20,10)">
+    <rect x="0" y="0" width="160" height="160" rx="28" fill="url(#g)"/>
+    <circle cx="80" cy="80" r="56" fill="#f3f5f5"/>
+    <circle cx="80" cy="80" r="44" fill="#d0d6d6"/>
+    <circle cx="64" cy="72" r="5.5" fill="#f28b6a"/>
+    <circle cx="94" cy="66" r="5" fill="#f28b6a"/>
+    <circle cx="82" cy="94" r="5" fill="#f28b6a"/>
+  </g>
+  <g transform="translate(210,110)">
+    <text x="0" y="0" font-family="Pacifico, cursive, Poppins, sans-serif" font-size="46" fill="#2f3f3f">Mon Pizzagramme</text>
+    <text x="0" y="44" font-family="Poppins, sans-serif" font-size="18" fill="#6b6f6f">by Steff 🍕</text>
+  </g>
+</svg>

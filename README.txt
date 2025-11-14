@@ -1,0 +1,1 @@
+MonPizzagramme by Steff — pack complet. Deploy on GitHub Pages or Hostinger. Place files at web root.

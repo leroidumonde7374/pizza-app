@@ -1,0 +1,2 @@
+self.addEventListener('install', function(e){ e.waitUntil(caches.open('mp-v1').then(function(c){ return c.addAll(['./','./index.html','./style.css','./script.js','./manifest.json','icons/icon-192.png','icons/icon-512.png']); })); });
+self.addEventListener('fetch', function(e){ e.respondWith(caches.match(e.request).then(function(r){ return r || fetch(e.request); })); });
