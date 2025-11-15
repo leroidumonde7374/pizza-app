@@ -1,35 +1,40 @@
-<!doctype html><html lang="fr">
-  <head>
+<!doctype html>
+<html lang="fr">
+<head>
   <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"/>
-  <title>Mon Pizzagramme by Steff</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+  <title>Pizzagramme by Steff</title>
   
+  <!-- iOS spécifique -->
   <link rel="apple-touch-icon" href="/pizza-app/icon-ios.png">
   <link rel="apple-touch-icon" sizes="180x180" href="/pizza-app/icon-ios.png">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Pizzagramme">
   
+  <!-- PWA -->
   <link rel="manifest" href="/pizza-app/manifest.json">
-  <link rel="icon" type="image/png" href="/pizza-app/icon-192.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="/pizza-app/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="/pizza-app/icon-512.png">
   <meta name="theme-color" content="#06b6b8">
   
   <link rel="stylesheet" href="style.css">
 </head>
-  <body>
+<body>
 <div class="texture"></div>
 <div class="app">
   <div id="splash" class="splash" role="dialog" aria-label="écran d'accueil">
     <div class="logo-wrap">
-      <img class="logo-svg" src="logo.svg" alt="Mon Pizzagramme">
-      <h1 id="welcome">Mon Pizzagramme by Steff 🍕</h1>
+      <img class="logo-svg" src="icon-512.png" alt="Pizzagramme" style="width: 120px; height: 120px;">
+      <h1 id="welcome">Pizzagramme 🍕</h1>
       <div class="by">by Steff</div>
     </div>
   </div>
-
   <div class="main-card" role="main" aria-live="polite">
-    <div class="title"><h2 id="mainTitle">Mon Pizzagramme by Steff 🍕</h2><div class="sub">Calculateur de pâte à pizza</div></div>
-
+    <div class="title">
+      <h2 id="mainTitle">Pizzagramme 🍕</h2>
+      <div class="sub">Calculateur de pâte à pizza</div>
+    </div>
     <div class="controls">
       <div>
         <label class="label">Nombre de pâtons</label>
@@ -44,7 +49,6 @@
         <input id="saltPct" type="number" value="2" min="0" max="5">
       </div>
     </div>
-
     <div class="result-grid">
       <div class="result"><small class="small">Farine</small><div id="flour">0 g</div></div>
       <div class="result"><small class="small">Eau</small><div id="water">0 g</div></div>
@@ -53,9 +57,7 @@
       <div class="result" style="grid-column:1/-1"><small class="small">Levure fraîche (approx.)</small><div id="yeastFresh">0 g</div></div>
       <div class="result" style="grid-column:1/-1"><small class="small">Total pâte</small><div id="totalDesc">0 g</div></div>
     </div>
-
     <hr style="border:none;margin:12px 0;border-top:1px solid rgba(0,0,0,0.06)">
-
     <h4 style="color:var(--text-dark)">Calculateur température d'eau</h4>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <div style="flex:1;min-width:120px">
@@ -67,31 +69,24 @@
         <input id="flourTemp" type="number" value="20" min="0" max="40">
       </div>
     </div>
-
     <div class="water-result" id="waterResult" aria-live="polite">
       💧 <strong>Température idéale de l'eau :</strong> <span id="waterTemp">-- °C</span>
     </div>
-
     <div class="row"><button id="resetBtn" class="btn">🔁 Réinitialiser</button></div>
-    <div class="signature">🍕 Mon Pizzagramme by Steff</div>
+    <div class="signature">🍕 by Steff</div>
   </div>
-
   <button id="ambianceBtn" class="ambiance" aria-label="Ambiance"><span class="hint">Ambiance 🔥</span>🔥</button>
-
   <div id="installBanner" class="install-banner" role="dialog" aria-live="polite">
-    <div>📲 Installe Mon Pizzagramme pour un accès rapide !</div>
+    <div>📲 Installe Pizzagramme pour un accès rapide !</div>
     <div class="install-actions">
       <button id="installNow" class="primary">Installer maintenant</button>
       <button id="installLater" class="secondary">Plus tard</button>
     </div>
   </div>
-
-  <div id="installNote" class="install-note">📱 Pour installer, touchez le bouton ⤴ puis « Ajouter à l’écran d’accueil »</div>
-
+  <div id="installNote" class="install-note">📱 Pour installer, touchez le bouton ⤴ puis « Ajouter à l'écran d'accueil »</div>
 </div>
-
 <audio id="popSound" src="sounds/pop.wav" preload="auto"></audio>
 <audio id="dingSound" src="sounds/ding.wav" preload="auto"></audio>
-
 <script src="script.js"></script>
-</body></html>
+</body>
+</html>
