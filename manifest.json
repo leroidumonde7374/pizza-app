@@ -1,7 +1,7 @@
 {
   "name": "Mon Pizzagramme by Steff",
   "short_name": "Pizzagramme",
-  "start_url": "/pizza-app/",
+  "start_url": "/pizza-app/index.html",
   "display": "standalone",
   "background_color": "#06b6b8",
   "theme_color": "#06b6b8",
@@ -11,18 +11,13 @@
       "src": "/pizza-app/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
       "src": "/pizza-app/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "/pizza-app/icon-ios.png",
-      "sizes": "180x180",
-      "type": "image/png"
+      "purpose": "any"
     }
   ]
 }
