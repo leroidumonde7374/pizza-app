@@ -8,19 +8,19 @@
   "scope": "/pizza-app/",
   "icons": [
     {
-      "src": "/pizza-app/icons/icon-192.png",
+      "src": "/pizza-app/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/pizza-app/icons/icon-512.png",
+      "src": "/pizza-app/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any maskable"
     },
     {
-      "src": "/pizza-app/icons/icon-ios.png",
+      "src": "/pizza-app/icon-ios.png",
       "sizes": "180x180",
       "type": "image/png"
     }
