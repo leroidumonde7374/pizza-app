@@ -1,92 +1,165 @@
-<!doctype html>
-<html lang="fr">
-<head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
-  <title>Pizzagramme by Steff</title>
+let deferredPrompt;
+
+// Enregistrement du Service Worker avec détection des mises à jour
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js').then((reg) => {
+    console.log('Service Worker enregistré');
+    
+    // Détection des mises à jour
+    reg.addEventListener('updatefound', () => {
+      const newWorker = reg.installing;
+      newWorker.addEventListener('statechange', () => {
+        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+          // Nouvelle version disponible !
+          if (confirm('🍕 Nouvelle version disponible ! Recharger pour voir les nouveautés ?')) {
+            window.location.reload();
+          }
+        }
+      });
+    });
+    
+    // Vérification périodique des mises à jour (toutes les heures)
+    setInterval(() => {
+      reg.update();
+    }, 3600000);
+  }).catch((err) => {
+    console.log('Service Worker échoué:', err);
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function(){
+  const splash = document.getElementById('splash');
+  const pop = document.getElementById('popSound');
+  const ding = document.getElementById('dingSound');
+  const installBanner = document.getElementById('installBanner');
+  const installNow = document.getElementById('installNow');
+  const installLater = document.getElementById('installLater');
+  const installNote = document.getElementById('installNote');
+  const title = document.getElementById('mainTitle');
   
-  <!-- iOS spécifique -->
-  <link rel="apple-touch-icon" href="/pizza-app/icon-ios.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/pizza-app/icon-ios.png">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Pizzagramme">
+  // Animation de démarrage
+  setTimeout(()=>{ 
+    try{ ding.play().catch(()=>{}); }catch(e){}; 
+    splash.style.opacity=0; 
+    setTimeout(()=>{ 
+      splash.style.display='none'; 
+      document.querySelector('.main-card').classList.add('fade-in'); 
+      installNote.classList.add('show'); 
+      setTimeout(()=>{ installNote.classList.remove('show'); },5000); 
+    },800); 
+  },2200);
   
-  <!-- PWA -->
-  <link rel="manifest" href="/pizza-app/manifest.json">
-  <link rel="icon" type="image/png" sizes="192x192" href="/pizza-app/icon-192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="/pizza-app/icon-512.png">
-  <meta name="theme-color" content="#06b6b8">
+  setTimeout(()=>{ 
+    if(title){ 
+      title.classList.add('beat-medium'); 
+      setTimeout(()=>{ title.classList.remove('beat-medium'); },1500); 
+    } 
+  },2000);
   
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-<div class="texture"></div>
-<div class="app">
-  <div id="splash" class="splash" role="dialog" aria-label="écran d'accueil">
-    <div class="logo-wrap">
-      <img class="logo-svg" src="icon-512.png" alt="Pizzagramme" style="width: 120px; height: 120px;">
-      <h1 id="welcome">Pizzagramme 🍕</h1>
-      <div class="by">by Steff</div>
-    </div>
-  </div>
-  <div class="main-card" role="main" aria-live="polite">
-    <div class="title">
-      <h2 id="mainTitle">Pizzagramme 🍕</h2>
-      <div class="sub">Calculateur de pâte à pizza</div>
-    </div>
-    <div class="controls">
-      <div>
-        <label class="label">Nombre de pâtons</label>
-        <input id="numBalls" type="number" inputmode="numeric" value="4" min="1">
-        <label class="label">Poids par pâton (g)</label>
-        <input id="weightPerBall" type="number" value="250" min="50">
-      </div>
-      <div>
-        <label class="label">Hydratation (%) <span id="hydrationVal">60%</span></label>
-        <input id="hydration" type="range" min="40" max="90" value="60">
-        <label class="label">Sel (% farine)</label>
-        <input id="saltPct" type="number" value="2" min="0" max="5">
-      </div>
-    </div>
-    <div class="result-grid">
-      <div class="result"><small class="small">Farine</small><div id="flour">0 g</div></div>
-      <div class="result"><small class="small">Eau</small><div id="water">0 g</div></div>
-      <div class="result"><small class="small">Sel</small><div id="salt">0 g</div></div>
-      <div class="result"><small class="small">Levure inst.</small><div id="yeast">0 g</div></div>
-      <div class="result" style="grid-column:1/-1"><small class="small">Levure fraîche (approx.)</small><div id="yeastFresh">0 g</div></div>
-      <div class="result" style="grid-column:1/-1"><small class="small">Total pâte</small><div id="totalDesc">0 g</div></div>
-    </div>
-    <hr style="border:none;margin:12px 0;border-top:1px solid rgba(0,0,0,0.06)">
-    <h4 style="color:var(--text-dark)">Calculateur température d'eau</h4>
-    <div style="display:flex;gap:8px;flex-wrap:wrap">
-      <div style="flex:1;min-width:120px">
-        <label class="label">Température ambiante (°C)</label>
-        <input id="roomTemp" type="number" value="22" min="0" max="40">
-      </div>
-      <div style="flex:1;min-width:120px">
-        <label class="label">Température farine (°C)</label>
-        <input id="flourTemp" type="number" value="20" min="0" max="40">
-      </div>
-    </div>
-    <div class="water-result" id="waterResult" aria-live="polite">
-      💧 <strong>Température idéale de l'eau :</strong> <span id="waterTemp">-- °C</span>
-    </div>
-    <div class="row"><button id="resetBtn" class="btn">🔁 Réinitialiser</button></div>
-    <div class="signature">🍕 by Steff</div>
-  </div>
-  <button id="ambianceBtn" class="ambiance" aria-label="Ambiance"><span class="hint">Ambiance 🔥</span>🔥</button>
-  <div id="installBanner" class="install-banner" role="dialog" aria-live="polite">
-    <div>📲 Installe Pizzagramme pour un accès rapide !</div>
-    <div class="install-actions">
-      <button id="installNow" class="primary">Installer maintenant</button>
-      <button id="installLater" class="secondary">Plus tard</button>
-    </div>
-  </div>
-  <div id="installNote" class="install-note">📱 Pour installer, touchez le bouton ⤴ puis « Ajouter à l'écran d'accueil »</div>
-</div>
-<audio id="popSound" src="sounds/pop.wav" preload="auto"></audio>
-<audio id="dingSound" src="sounds/ding.wav" preload="auto"></audio>
-<script src="script.js"></script>
-</body>
-</html>
+  // Éléments du formulaire
+  const numBalls = document.getElementById('numBalls');
+  const weightPerBall = document.getElementById('weightPerBall');
+  const hydration = document.getElementById('hydration');
+  const hydrationVal = document.getElementById('hydrationVal');
+  const saltPct = document.getElementById('saltPct');
+  
+  // Événements
+  [numBalls, weightPerBall, hydration, saltPct].forEach(el=>el.addEventListener('input', recalc));
+  hydration.addEventListener('input', ()=>{ 
+    hydrationVal.textContent = hydration.value + '%'; 
+    recalc(); 
+  });
+  
+  // Calcul des ingrédients
+  function recalc(){
+    const nb = Math.max(1, Number(numBalls.value)||1);
+    const wp = Math.max(1, Number(weightPerBall.value)||250);
+    const total = Math.round(nb*wp);
+    const hyd = Number(hydration.value)/100;
+    const salt = Number(saltPct.value)/100||0.02;
+    const yeastPct = 0.002;
+    const combine = 1 + hyd + salt + yeastPct;
+    const F = total / combine;
+    const W = F * hyd;
+    const S = F * salt;
+    const Y = F * yeastPct;
+    
+    document.getElementById('flour').textContent = Math.round(F) + ' g';
+    document.getElementById('water').textContent = Math.round(W) + ' g';
+    document.getElementById('salt').textContent = S.toFixed(1) + ' g';
+    document.getElementById('yeast').textContent = Y.toFixed(2) + ' g';
+    document.getElementById('yeastFresh').textContent = (Y*3).toFixed(2) + ' g (approx.)';
+    document.getElementById('totalDesc').textContent = total + ' g — ' + nb + ' pâtons × ' + wp + ' g';
+    
+    try{ pop.play().catch(()=>{}); }catch(e){}; 
+    calcWater();
+  }
+  
+  // Calcul température de l'eau
+  function calcWater(){
+    const DDT = 24;
+    const fT = Number(document.getElementById('flourTemp').value)||20;
+    const rT = Number(document.getElementById('roomTemp').value)||22;
+    const friction = 2;
+    const wT = Math.round(DDT*3 - fT - rT - friction);
+    document.getElementById('waterTemp').textContent = wT + ' °C';
+    document.getElementById('waterResult').classList.add('show');
+  }
+  
+  // Bouton reset
+  document.getElementById('resetBtn').addEventListener('click', ()=>{ 
+    document.getElementById('numBalls').value=4; 
+    document.getElementById('weightPerBall').value=250; 
+    document.getElementById('hydration').value=60; 
+    document.getElementById('hydrationVal').textContent='60%'; 
+    document.getElementById('saltPct').value=2; 
+    document.getElementById('roomTemp').value=22; 
+    document.getElementById('flourTemp').value=20; 
+    recalc(); 
+  });
+  
+  // Calcul initial
+  recalc();
+  
+  // Détection iOS
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isInStandaloneMode = ('standalone' in window.navigator) && (window.navigator.standalone);
+  
+  // Gestion de l'installation PWA
+  window.addEventListener('beforeinstallprompt', (e)=> {
+    e.preventDefault();
+    deferredPrompt = e;
+    setTimeout(()=>{ 
+      installBanner.classList.add('show'); 
+      try{ document.getElementById('popSound').play().catch(()=>{}); }catch(e){} 
+    },1500);
+  });
+  
+  // Si iOS et pas encore installé, afficher le message manuel
+  if(isIOS && !isInStandaloneMode){
+    setTimeout(()=>{ 
+      installNote.classList.add('show'); 
+      setTimeout(()=>{ installNote.classList.remove('show'); },8000);
+    },2000);
+  }
+  
+  installNow.addEventListener('click', async ()=> {
+    installBanner.classList.remove('show');
+    if(deferredPrompt){
+      deferredPrompt.prompt();
+      const choice = await deferredPrompt.userChoice;
+      if(choice.outcome === 'accepted'){
+        try{ document.getElementById('popSound').play().catch(()=>{}); }catch(e){} 
+      }
+      deferredPrompt = null;
+    } else if(isIOS) {
+      // Sur iOS, afficher les instructions
+      installNote.classList.add('show');
+      setTimeout(()=>{ installNote.classList.remove('show'); },8000);
+    }
+  });
+  
+  installLater.addEventListener('click', ()=>{ 
+    installBanner.classList.remove('show'); 
+  });
+});
