@@ -121,6 +121,10 @@ document.addEventListener('DOMContentLoaded', function(){
   // Calcul initial
   recalc();
   
+  // Détection iOS
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isInStandaloneMode = ('standalone' in window.navigator) && (window.navigator.standalone);
+  
   // Gestion de l'installation PWA
   window.addEventListener('beforeinstallprompt', (e)=> {
     e.preventDefault();
@@ -131,6 +135,14 @@ document.addEventListener('DOMContentLoaded', function(){
     },1500);
   });
   
+  // Si iOS et pas encore installé, afficher le message manuel
+  if(isIOS && !isInStandaloneMode){
+    setTimeout(()=>{ 
+      installNote.classList.add('show'); 
+      setTimeout(()=>{ installNote.classList.remove('show'); },8000);
+    },2000);
+  }
+  
   installNow.addEventListener('click', async ()=> {
     installBanner.classList.remove('show');
     if(deferredPrompt){
@@ -140,6 +152,10 @@ document.addEventListener('DOMContentLoaded', function(){
         try{ document.getElementById('popSound').play().catch(()=>{}); }catch(e){} 
       }
       deferredPrompt = null;
+    } else if(isIOS) {
+      // Sur iOS, afficher les instructions
+      installNote.classList.add('show');
+      setTimeout(()=>{ installNote.classList.remove('show'); },8000);
     }
   });
   
