@@ -66,11 +66,15 @@ document.addEventListener('DOMContentLoaded', function(){
   
   // Événements
   [numBalls, weightPerBall, hydration, saltPct].forEach(el=>el.addEventListener('input', recalc));
-  [document.getElementById('roomTemp'), document.getElementById('flourTemp'), kneadTemp].forEach(el=>el.addEventListener('input', calcWater));
   hydration.addEventListener('input', ()=>{ 
     hydrationVal.textContent = hydration.value + '%'; 
     recalc(); 
   });
+  
+  // Événements pour le calculateur de température
+  const roomTemp = document.getElementById('roomTemp');
+  const flourTemp = document.getElementById('flourTemp');
+  [roomTemp, flourTemp, kneadTemp].forEach(el=>el.addEventListener('input', calcWater));
   
   // Calcul des ingrédients
   function recalc(){
@@ -102,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function(){
     const targetDoughTemp = 60; // Température cible totale
     const fT = Number(document.getElementById('flourTemp').value)||20;
     const rT = Number(document.getElementById('roomTemp').value)||22;
-    const kT = Number(kneadTemp.value)||2;
+    const kT = Number(document.getElementById('kneadTemp').value)||2;
     
     // Formule : TE = 60 - (TA + TF + TP)
     const wT = targetDoughTemp - fT - rT - kT;
