@@ -58,7 +58,11 @@
       <div class="result" style="grid-column:1/-1"><small class="small">Total pâte</small><div id="totalDesc">0 g</div></div>
     </div>
     <hr style="border:none;margin:12px 0;border-top:1px solid rgba(0,0,0,0.06)">
-    <h4 style="color:var(--text-dark)">Calculateur température d'eau</h4>
+    <h4 style="color:var(--text-dark)">Calculateur température d'eau - Méthode des 3T</h4>
+    <div style="background:#f0f9ff;padding:12px;border-radius:8px;margin-bottom:12px;font-size:13px;line-height:1.5">
+      <strong>📐 Formule :</strong> TE = 60 - (TA + TF + TP)<br>
+      <span style="color:#666">TA = Température Ambiante | TF = Température Farine | TP = Température Pétrin (friction)</span>
+    </div>
     <div style="display:flex;gap:8px;flex-wrap:wrap">
       <div style="flex:1;min-width:120px">
         <label class="label">Température ambiante (°C)</label>
@@ -68,9 +72,17 @@
         <label class="label">Température farine (°C)</label>
         <input id="flourTemp" type="number" value="20" min="0" max="40">
       </div>
+      <div style="flex:1;min-width:120px">
+        <label class="label">Température pétrin (°C)</label>
+        <input id="kneadTemp" type="number" value="2" min="0" max="10">
+        <small style="font-size:11px;color:#666">2°C manuel, 4-8°C robot</small>
+      </div>
     </div>
     <div class="water-result" id="waterResult" aria-live="polite">
       💧 <strong>Température idéale de l'eau :</strong> <span id="waterTemp">-- °C</span>
+    </div>
+    <div id="waterExplanation" style="margin-top:8px;padding:10px;background:#fff3cd;border-radius:6px;font-size:12px;display:none">
+      <strong>🧮 Calcul :</strong> <span id="calcDetails"></span>
     </div>
     <div class="row"><button id="resetBtn" class="btn">🔁 Réinitialiser</button></div>
     <div class="signature">🍕 by Steff</div>
