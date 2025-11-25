@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pizzagramme-v4'; // Incrémentez à chaque mise à jour !
+const CACHE_NAME = 'pizzagramme-v5'; // Incrémentez à chaque mise à jour !
 
 const urlsToCache = [
   './',
