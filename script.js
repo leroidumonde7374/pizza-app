@@ -62,9 +62,11 @@ document.addEventListener('DOMContentLoaded', function(){
   const hydration = document.getElementById('hydration');
   const hydrationVal = document.getElementById('hydrationVal');
   const saltPct = document.getElementById('saltPct');
+  const kneadTemp = document.getElementById('kneadTemp');
   
   // Événements
   [numBalls, weightPerBall, hydration, saltPct].forEach(el=>el.addEventListener('input', recalc));
+  [document.getElementById('roomTemp'), document.getElementById('flourTemp'), kneadTemp].forEach(el=>el.addEventListener('input', calcWater));
   hydration.addEventListener('input', ()=>{ 
     hydrationVal.textContent = hydration.value + '%'; 
     recalc(); 
@@ -95,15 +97,33 @@ document.addEventListener('DOMContentLoaded', function(){
     calcWater();
   }
   
-  // Calcul température de l'eau
+  // Calcul température de l'eau - Méthode des 3T
   function calcWater(){
-    const DDT = 24;
+    const targetDoughTemp = 60; // Température cible totale
     const fT = Number(document.getElementById('flourTemp').value)||20;
     const rT = Number(document.getElementById('roomTemp').value)||22;
-    const friction = 2;
-    const wT = Math.round(DDT*3 - fT - rT - friction);
+    const kT = Number(kneadTemp.value)||2;
+    
+    // Formule : TE = 60 - (TA + TF + TP)
+    const wT = targetDoughTemp - fT - rT - kT;
+    
     document.getElementById('waterTemp').textContent = wT + ' °C';
     document.getElementById('waterResult').classList.add('show');
+    
+    // Afficher le détail du calcul
+    const explanation = document.getElementById('waterExplanation');
+    const calcDetails = document.getElementById('calcDetails');
+    calcDetails.textContent = `60 - (${rT} + ${fT} + ${kT}) = 60 - ${rT + fT + kT} = ${wT}°C`;
+    explanation.style.display = 'block';
+    
+    // Avertissement si température anormale
+    if(wT < 5){
+      calcDetails.innerHTML += '<br><span style="color:#d97706">⚠️ Température très froide, difficile à obtenir</span>';
+    } else if(wT > 35){
+      calcDetails.innerHTML += '<br><span style="color:#dc2626">⚠️ Attention : eau trop chaude peut tuer la levure !</span>';
+    } else if(wT >= 15 && wT <= 25){
+      calcDetails.innerHTML += '<br><span style="color:#059669">✅ Température idéale pour la fermentation</span>';
+    }
   }
   
   // Bouton reset
@@ -114,7 +134,8 @@ document.addEventListener('DOMContentLoaded', function(){
     document.getElementById('hydrationVal').textContent='60%'; 
     document.getElementById('saltPct').value=2; 
     document.getElementById('roomTemp').value=22; 
-    document.getElementById('flourTemp').value=20; 
+    document.getElementById('flourTemp').value=20;
+    kneadTemp.value=2;
     recalc(); 
   });
   
